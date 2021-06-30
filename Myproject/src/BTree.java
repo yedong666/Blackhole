@@ -6,10 +6,23 @@ public class BTree <T, E extends Comparator<T> > {
     private int M;
     //B树根结点
     BTreeNode<T> root;
+    //存储操作返回信息
+    String returnData;
     //泛型比较对象，用于比较泛型结点中元素的大小
     E cmp;
 
     /*以下为B树的各种辅助算法*/
+
+    public void setM(int m){
+        //只有在B树为空时才可修改B树的阶数
+        if (root.key.size() == 0){
+            this.M = m;
+        }
+        else{
+            this.returnData = "B树不为空，不可修改阶数\n";
+        }
+
+    }
 
     /**
      * @brief 创建一棵空的B树
@@ -100,6 +113,26 @@ public class BTree <T, E extends Comparator<T> > {
         return root;
     }
 
+    boolean flag = false;
+    public void search(BTreeNode<T> baseNode, T target, int level){
+        if (baseNode != null)
+        {
+            int pos = searchPos(baseNode, target);
+            if (pos == -1){
+                System.out.println("level:" + level + "层");
+                System.out.println("key:" + target);
+                flag = true;
+            }
+            else if (baseNode.pointer.size() > 0) {
+                search(baseNode.pointer.get(pos), target, ++level);
+            }
+        }
+        else{
+            System.out.println("查找元素不存在");
+            flag = false;
+        }
+    }
+
 
     /*以下为B树的插入元素算法*/
     /**
@@ -163,15 +196,18 @@ public class BTree <T, E extends Comparator<T> > {
      * @param target  待插值
      */
     private int searchPos(BTreeNode<T> node, T target){
-        int pos = node.num;
+        int pos = node.key.size();
 
         for (int i = 0; i < node.key.size(); i++){
             if (cmp.compare(target, node.key.get(i)) < 0){
               pos = i;
               break;
             }
+            if (cmp.compare(target, node.key.get(i)) == 0){
+                //发现存在与待插入元素相同的键值，则返回-1
+                return -1;
+            }
         }
-
         return pos;
     }
 
@@ -181,18 +217,26 @@ public class BTree <T, E extends Comparator<T> > {
      * @param target 待插值
      */
     private void nodeInsert(BTreeNode<T> node, T target){
+        int pos = searchPos(node, target);
+
+        //插入过程中发现待插入元素在B树中已存在
+        if(pos == -1) {
+            returnData = "B树中不能存在相同元素, 元素" + target + "\n插入失败\n";
+            System.out.println("B树中不能存在相同元素, 元素" + target + "插入失败");
+            return;
+        }
         if(node.isLeave){
             //node为叶子结点则直接插入
             if (node.pointer.size() == 0){
-                node.pointer.add(searchPos(node, target), null);
+                node.pointer.add(null);
             }
-            node.key.add(searchPos(node, target), target);
-            node.pointer.add(searchPos(node, target), null);
+            node.key.add(pos, target);
+            node.pointer.add(pos + 1, null);
             node.num++;
         }
         else{
-            //node不是叶子结点则在其子合适子树中寻找合适的结点插入
-            BTreeNode<T> temp = node.pointer.get(searchPos(node, target));
+            //node不是叶子结点则在其子树中寻找合适的结点插入
+            BTreeNode<T> temp = node.pointer.get(pos);
 
             if (temp.num == 2*M - 1){
                 //若结点已满,将之分裂
@@ -304,9 +348,15 @@ public class BTree <T, E extends Comparator<T> > {
             if (i < node.key.size() && node.key.get(i) == target){
                 //有则直接删除
                 node.key.remove(i);
+                node.num--;
                 node.pointer.remove(i);
+                if (node.pointer.size() == 1){
+                    node.pointer.remove(0);
+                }
+
             }
             else{
+                returnData = "无此元素！\n";
                 System.out.println("无此元素！");
             }
 

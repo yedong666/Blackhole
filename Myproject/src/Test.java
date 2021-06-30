@@ -1,5 +1,16 @@
 import java.util.Comparator;
 
+interface getNew<T>{
+    T createT(String s);
+}
+
+class G implements getNew<Integer>{
+    @Override
+    public Integer createT(String s) {
+        return Integer.parseInt(s);
+    }
+}
+
 class student{
     int grade;
     String name;
@@ -105,22 +116,35 @@ public class Test {
         Integer[] testArray = new Integer[6];
         testBtree.insert(testBtree.getRoot(), 10);
         testBtree.insert(testBtree.getRoot(), 9);
-        testBtree.insert(testBtree.getRoot(), 12);
+       testBtree.insert(testBtree.getRoot(), 12);
+//
+//        testBtree.insert(testBtree.getRoot(), 13);
+//        testBtree.insert(testBtree.getRoot(), 14);
+//        testBtree.insert(testBtree.getRoot(), 11);
+//        testBtree.insert(testBtree.getRoot(), 8);
+//        testBtree.insert(testBtree.getRoot(), 7);
+//        testBtree.insert(testBtree.getRoot(), 6);
+//        testBtree.insert(testBtree.getRoot(), 5);
+//        testBtree.insert(testBtree.getRoot(), 25);
+//        testBtree.insert(testBtree.getRoot(), 56);
+//        testBtree.insert(testBtree.getRoot(), 2);
+        testBtree.insert(testBtree.getRoot(), 2);
         testBtree.insert(testBtree.getRoot(), 13);
-        testBtree.insert(testBtree.getRoot(), 14);
-        testBtree.insert(testBtree.getRoot(), 11);
-        testBtree.insert(testBtree.getRoot(), 8);
-        testBtree.insert(testBtree.getRoot(), 7);
-        testBtree.insert(testBtree.getRoot(), 6);
-        testBtree.insert(testBtree.getRoot(), 5);
-        testBtree.levelTravel(testBtree.getRoot());
-//        testBtree.inorderTravel(testBtree.getRoot());
+        testBtree.delete(testBtree.getRoot(), 10);
         testBtree.delete(testBtree.getRoot(), 9);
-        testBtree.delete(testBtree.getRoot(), 11);
-        testBtree.delete(testBtree.getRoot(), 12);
+        //testBtree.insert(testBtree.getRoot(), 9);
+        //testBtree.insert(testBtree.getRoot(), 2);
         testBtree.levelTravel(testBtree.getRoot());
+        //testBtree.search(testBtree.getRoot(), 9, 1);
+        //testBtree.delete(testBtree.getRoot(), 8);
+////        testBtree.inorderTravel(testBtree.getRoot());
+//        testBtree.delete(testBtree.getRoot(), 9);
+//        testBtree.delete(testBtree.getRoot(), 11);
+//        testBtree.delete(testBtree.getRoot(), 12);
+        //testBtree.levelTravel(testBtree.getRoot());
+        G g = new G();
 
-
+        Window w = new Window(testBtree, "测试窗口", g);
 //        List<Integer> testList = new ArrayList<>();
 //        testList.add(10);
 //        System.out.println(testList.get(0));
